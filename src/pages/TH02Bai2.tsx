@@ -16,13 +16,13 @@ const TH02Bai2: React.FC = () => {
   const [monHocs, setMonHocs] = useState<any[]>([]);
   const [cauHois, setCauHois] = useState<any[]>([]);
   const [deThis, setDeThis] = useState<any[]>([]);
-  const [cauTrucs, setCauTrucs] = useState<any[]>([]); // State lưu cấu trúc mẫu
+  const [cauTrucs, setCauTrucs] = useState<any[]>([]);
 
   const [isModalKKT, setIsModalKKT] = useState(false);
   const [isModalMonHoc, setIsModalMonHoc] = useState(false);
   const [isModalCauHoi, setIsModalCauHoi] = useState(false);
   
-  // States cho việc tạo/sửa Đề thi & Cấu trúc
+
   const [isModalDeThi, setIsModalDeThi] = useState(false);
   const [editingDeThiId, setEditingDeThiId] = useState<string | null>(null);
   const [viewDeThi, setViewDeThi] = useState<any>(null);
@@ -40,7 +40,7 @@ const TH02Bai2: React.FC = () => {
     const dMH = localStorage.getItem('th02_mh');
     const dCH = localStorage.getItem('th02_ch');
     const dDT = localStorage.getItem('th02_dt');
-    const dCT = localStorage.getItem('th02_ct'); // Lấy cấu trúc đã lưu
+    const dCT = localStorage.getItem('th02_ct');
     if (dKKT) setKhoiKienThucs(JSON.parse(dKKT));
     if (dMH) setMonHocs(JSON.parse(dMH));
     if (dCH) setCauHois(JSON.parse(dCH));
@@ -79,7 +79,6 @@ const TH02Bai2: React.FC = () => {
     message.success('Thêm câu hỏi thành công');
   };
 
-  // --- LƯU CẤU TRÚC MẪU ---
   const handleSaveStructure = () => {
     const { subjectId, structure } = formDeThi.getFieldsValue();
     if (!subjectId || !structure || structure.length === 0) {
@@ -99,7 +98,6 @@ const TH02Bai2: React.FC = () => {
     message.success('Đã lưu cấu trúc mẫu!');
   };
 
-  // --- ÁP DỤNG CẤU TRÚC MẪU ---
   const handleApplyStructure = (ctId: string) => {
     if (!ctId) return;
     const ct = cauTrucs.find(c => c.id === ctId);
@@ -112,7 +110,6 @@ const TH02Bai2: React.FC = () => {
     }
   };
 
-  // --- MỞ MODAL TẠO/SỬA ĐỀ THI ---
   const openCreateExamModal = () => {
     setEditingDeThiId(null);
     formDeThi.resetFields();
@@ -136,7 +133,6 @@ const TH02Bai2: React.FC = () => {
     message.success('Đã xóa đề thi!');
   };
 
-  // --- SINH VÀ LƯU ĐỀ THI ---
   const handleGenerateDeThi = (values: any) => {
     const { examName, subjectId, structure } = values;
     
@@ -146,7 +142,6 @@ const TH02Bai2: React.FC = () => {
 
     let selectedQuestions: any[] = [];
 
-    // Bốc câu hỏi ngẫu nhiên theo cấu trúc
     for (const req of structure) {
       if (!req || !req.khoiKienThucId || !req.difficulty || !req.count) continue;
 
@@ -241,7 +236,6 @@ const TH02Bai2: React.FC = () => {
         </TabPane>
       </Tabs>
 
-      {/* --- CÁC MODAL THÊM DỮ LIỆU CƠ BẢN --- */}
       <Modal title="Thêm Khối kiến thức" visible={isModalKKT} onCancel={() => setIsModalKKT(false)} onOk={() => formKKT.submit()}>
         <Form form={formKKT} onFinish={handleSaveKKT} layout="vertical">
           <Form.Item name="name" label="Tên khối kiến thức" rules={[{ required: true }]}><Input /></Form.Item>
