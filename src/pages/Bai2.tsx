@@ -1,191 +1,223 @@
 import React, { useState, useEffect } from 'react';
-import { Card, Table, Button, Modal, Form, Input, InputNumber, DatePicker, AutoComplete, Tag, Space, message, Progress } from 'antd';
+import { 
+  Card, Table, Button, Drawer, Form, Input, InputNumber, 
+  DatePicker, AutoComplete, Tag, Space, message, Progress, 
+  Row, Col, Statistic, Popconfirm 
+} from 'antd';
 import moment from 'moment';
 
 const Bai2: React.FC = () => {
-  const [categories, setCategories] = useState<string[]>(['Toán', 'Văn', 'Anh', 'Khoa học', 'Công nghệ']);
-  const [sessions, setSessions] = useState<any[]>([]);
-  const [monthlyGoal, setMonthlyGoal] = useState<number>(600);
+  const [courseList, setCourseList] = useState<string[]>(['Toán Cao Cấp', 'Tiếng Anh', 'Vật Lý', 'Triết Học', 'Lập Trình']);
+  const [logEntries, setLogEntries] = useState<any[]>([]);
+  const [targetMinutes, setTargetMinutes] = useState<number>(600);
   
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [editingId, setEditingId] = useState<number | null>(null);
+  const [drawerVisible, setDrawerVisible] = useState(false);
+  const [activeRecordId, setActiveRecordId] = useState<number | null>(null);
   
-  const [isEditingGoal, setIsEditingGoal] = useState(false);
-  const [tempGoal, setTempGoal] = useState<number>(600);
+  const [editTargetMode, setEditTargetMode] = useState(false);
+  const [draftTarget, setDraftTarget] = useState<number>(600);
 
   const [form] = Form.useForm();
 
   useEffect(() => {
-    const savedSessions = localStorage.getItem('study_sessions');
-    if (savedSessions) setSessions(JSON.parse(savedSessions));
+    const savedLogs = localStorage.getItem('my_learning_logs');
+    if (savedLogs) setLogEntries(JSON.parse(savedLogs));
 
-    const savedCats = localStorage.getItem('study_categories');
-    if (savedCats) setCategories(JSON.parse(savedCats));
+    const savedCourses = localStorage.getItem('my_course_list');
+    if (savedCourses) setCourseList(JSON.parse(savedCourses));
 
-    const savedGoal = localStorage.getItem('study_monthly_goal');
-    if (savedGoal) {
-      setMonthlyGoal(Number(savedGoal));
-      setTempGoal(Number(savedGoal));
+    const savedTarget = localStorage.getItem('my_monthly_target');
+    if (savedTarget) {
+      setTargetMinutes(Number(savedTarget));
+      setDraftTarget(Number(savedTarget));
     }
   }, []);
 
-  const handleSaveGoal = () => {
-    setMonthlyGoal(tempGoal);
-    localStorage.setItem('study_monthly_goal', tempGoal.toString());
-    setIsEditingGoal(false);
-    message.success('Đã cập nhật mục tiêu tháng!');
+  const updateMonthlyTarget = () => {
+    setTargetMinutes(draftTarget);
+    localStorage.setItem('my_monthly_target', draftTarget.toString());
+    setEditTargetMode(false);
+    message.success('Thiết lập mục tiêu thành công!');
   };
 
-  const handleOpenAddModal = () => {
-    setEditingId(null);
-    form.resetFields();
-    setIsModalOpen(true);
+  const openForm = (record?: any) => {
+    if (record && record.id) {
+      setActiveRecordId(record.id);
+      form.setFieldsValue({
+        ...record,
+        recordDate: moment(record.recordDate, 'YYYY-MM-DD HH:mm')
+      });
+    } else {
+      setActiveRecordId(null);
+      form.resetFields();
+    }
+    setDrawerVisible(true);
   };
 
-  const handleEdit = (record: any) => {
-    setEditingId(record.id);
-    form.setFieldsValue({
-      ...record,
-      date: moment(record.date, 'YYYY-MM-DD HH:mm')
-    });
-    setIsModalOpen(true);
-  };
-
-  const handleSaveSession = (values: any) => {
-    const sessionData = { 
+  const onSubmitRecord = (values: any) => {
+    const logData = { 
       ...values, 
-      date: values.date.format('YYYY-MM-DD HH:mm'),
-      month: values.date.format('YYYY-MM')
+      recordDate: values.recordDate.format('YYYY-MM-DD HH:mm'),
+      monthKey: values.recordDate.format('YYYY-MM')
     };
 
-    if (!categories.includes(values.subject)) {
-      const newCats = [...categories, values.subject];
-      setCategories(newCats);
-      localStorage.setItem('study_categories', JSON.stringify(newCats));
+    if (!courseList.includes(values.topic)) {
+      const updatedCourses = [...courseList, values.topic];
+      setCourseList(updatedCourses);
+      localStorage.setItem('my_course_list', JSON.stringify(updatedCourses));
     }
     
-    let updated;
-    if (editingId) {
-      updated = sessions.map(s => s.id === editingId ? { ...s, ...sessionData } : s);
-      message.success('Đã cập nhật tiến độ học tập!');
+    let newLogs;
+    if (activeRecordId) {
+      newLogs = logEntries.map(item => item.id === activeRecordId ? { ...item, ...logData } : item);
+      message.success('Đã cập nhật bản ghi!');
     } else {
-      updated = [...sessions, { ...sessionData, id: Date.now() }];
-      message.success('Đã thêm lịch học!');
+      newLogs = [{ ...logData, id: Date.now() }, ...logEntries];
+      message.success('Ghi nhận tiến độ thành công!');
     }
 
-    setSessions(updated);
-    localStorage.setItem('study_sessions', JSON.stringify(updated));
-    setIsModalOpen(false);
-    form.resetFields();
+    setLogEntries(newLogs);
+    localStorage.setItem('my_learning_logs', JSON.stringify(newLogs));
+    setDrawerVisible(false);
   };
 
-  const deleteSession = (id: number) => {
-    const updated = sessions.filter(s => s.id !== id);
-    setSessions(updated);
-    localStorage.setItem('study_sessions', JSON.stringify(updated));
-    message.success('Đã xóa lịch học!');
+  const removeLog = (id: number) => {
+    const filtered = logEntries.filter(item => item.id !== id);
+    setLogEntries(filtered);
+    localStorage.setItem('my_learning_logs', JSON.stringify(filtered));
+    message.info('Đã xóa dữ liệu.');
   };
 
-  const currentMonth = moment().format('YYYY-MM');
-  const totalDuration = sessions
-    .filter(s => s.month === currentMonth)
-    .reduce((sum, s) => sum + (s.duration || 0), 0);
+  const currentMonthStr = moment().format('YYYY-MM');
+  const timeSpentThisMonth = logEntries
+    .filter(item => item.monthKey === currentMonthStr)
+    .reduce((total, item) => total + (item.timeSpent || 0), 0);
   
-  const isGoalReached = totalDuration >= monthlyGoal;
+  const isTargetAchieved = timeSpentThisMonth >= targetMinutes;
+  const progressPercent = Math.min(Math.round((timeSpentThisMonth / targetMinutes) * 100), 100);
 
-  const columns = [
-    { title: 'Môn học', dataIndex: 'subject', key: 'subject', render: (text: string) => <Tag color="blue">{text}</Tag> },
-    { title: 'Thời gian', dataIndex: 'date', key: 'date' },
-    { title: 'Thời lượng (phút)', dataIndex: 'duration', key: 'duration' },
-    { title: 'Nội dung', dataIndex: 'content', key: 'content' },
-    { title: 'Ghi chú', dataIndex: 'note', key: 'note' },
+  const tableColumns = [
     { 
-      title: 'Hành động', 
+      title: 'Môn học', 
+      dataIndex: 'topic', 
+      render: (val: string) => <Tag color="geekblue">{val}</Tag> 
+    },
+    { title: 'Thời gian', dataIndex: 'recordDate' },
+    { 
+      title: 'Thời lượng', 
+      dataIndex: 'timeSpent',
+      render: (val: number) => <strong>{val} phút</strong>
+    },
+    { title: 'Nội dung', dataIndex: 'details' },
+    { title: 'Ghi chú thêm', dataIndex: 'extraInfo' },
+    { 
+      title: 'Tùy chỉnh', 
       render: (_: any, record: any) => (
-        <Space>
-          <Button type="link" onClick={() => handleEdit(record)}>Sửa</Button>
-          <Button danger type="link" onClick={() => deleteSession(record.id)}>Xóa</Button>
+        <Space size="middle">
+          <a onClick={() => openForm(record)}>Chỉnh sửa</a>
+          <Popconfirm title="Bạn có chắc chắn muốn xóa?" onConfirm={() => removeLog(record.id)} okText="Có" cancelText="Không">
+            <a style={{ color: '#ff4d4f' }}>Xóa bỏ</a>
+          </Popconfirm>
         </Space>
       )
     },
   ];
 
   return (
-    <Card title="Bài 2: Quản lý học tập & Mục tiêu">
-      
-      <div style={{ marginBottom: 24, padding: 16, background: '#f5f5f5', borderRadius: 8 }}>
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 8 }}>
-          <h4 style={{ margin: 0 }}>Mục tiêu tháng {currentMonth}: {totalDuration}/{monthlyGoal} phút</h4>
+    <Card title="Quản lý Tiến độ Học tập Sinh viên" bordered={false} style={{ boxShadow: '0 2px 8px rgba(0,0,0,0.1)' }}>
+      <div style={{ background: '#fafafa', padding: '20px', borderRadius: '10px', marginBottom: '24px' }}>
+        <Row gutter={24} align="middle">
+          <Col span={14}>
+            <Statistic 
+              title={`Tổng thời gian học tháng ${currentMonthStr}`} 
+              value={timeSpentThisMonth} 
+              suffix={`/ ${targetMinutes} phút`} 
+              valueStyle={{ color: isTargetAchieved ? '#52c41a' : '#1890ff', fontWeight: 'bold' }}
+            />
+            <div style={{ marginTop: 10 }}>
+              {isTargetAchieved ? 
+                <Tag color="success">Tuyệt vời! Bạn đã vượt mục tiêu</Tag> : 
+                <Tag color="processing">Cố gắng lên! Bạn đang bám sát mục tiêu</Tag>
+              }
+            </div>
+          </Col>
           
-          {isEditingGoal ? (
-            <Space>
-              <InputNumber 
-                min={1} 
-                value={tempGoal} 
-                onChange={(val) => setTempGoal(val || 1)} 
-              />
-              <Button type="primary" size="small" onClick={handleSaveGoal}>Lưu</Button>
-              <Button size="small" onClick={() => setIsEditingGoal(false)}>Hủy</Button>
-            </Space>
-          ) : (
-            <Button type="link" onClick={() => { setIsEditingGoal(true); setTempGoal(monthlyGoal); }}>
-              Sửa mục tiêu
-            </Button>
-          )}
-        </div>
-
+          <Col span={10} style={{ textAlign: 'right' }}>
+            {editTargetMode ? (
+              <Space>
+                <InputNumber min={1} value={draftTarget} onChange={(val) => setDraftTarget(val || 1)} />
+                <Button type="primary" size="small" onClick={updateMonthlyTarget}>Xác nhận</Button>
+                <Button size="small" onClick={() => setEditTargetMode(false)}>Hủy</Button>
+              </Space>
+            ) : (
+              <Button type="link" onClick={() => { setEditTargetMode(true); setDraftTarget(targetMinutes); }}>
+                Thay đổi mục tiêu
+              </Button>
+            )}
+          </Col>
+        </Row>
+        
         <Progress 
-          percent={Math.round((totalDuration / monthlyGoal) * 100)} 
-          status={isGoalReached ? 'success' : 'active'} 
+          percent={progressPercent} 
+          status={isTargetAchieved ? 'success' : 'active'} 
+          strokeWidth={10}
+          style={{ marginTop: 20 }}
         />
-        {isGoalReached ? 
-          <Tag color="green" style={{ marginTop: 8 }}>Đã đạt mục tiêu tháng!</Tag> : 
-          <Tag color="orange" style={{ marginTop: 8 }}>Chưa đạt mục tiêu</Tag>
-        }
       </div>
 
-      <Button type="primary" onClick={handleOpenAddModal} style={{ marginBottom: 16 }}>
-        Thêm lịch học mới
+      <Button type="primary" size="large" onClick={() => openForm()} style={{ marginBottom: 20 }}>
+        + Khai báo buổi học
       </Button>
       
-      <Table dataSource={sessions} columns={columns} rowKey="id" />
+      <Table 
+        dataSource={logEntries} 
+        columns={tableColumns} 
+        rowKey="id" 
+        pagination={{ pageSize: 5 }} 
+      />
 
-      <Modal 
-        title={editingId ? "Sửa tiến độ học tập" : "Thêm tiến độ học tập"} 
-        visible={isModalOpen}
-        onCancel={() => setIsModalOpen(false)} 
-        onOk={() => form.submit()}
-        okText="Lưu lại"
+      <Drawer 
+        title={activeRecordId ? "Cập nhật buổi học" : "Khai báo buổi học mới"} 
+        width={450}
+        onClose={() => setDrawerVisible(false)} 
+        visible={drawerVisible}
+        extra={
+          <Button type="primary" onClick={() => form.submit()}>Lưu thông tin</Button>
+        }
       >
-        <Form form={form} layout="vertical" onFinish={handleSaveSession}>
-          <Form.Item name="subject" label="Môn học" rules={[{ required: true, message: 'Hãy chọn hoặc nhập môn!' }]}>
+        <Form form={form} layout="vertical" onFinish={onSubmitRecord}>
+          <Form.Item name="topic" label="Tên môn học" rules={[{ required: true, message: 'Bắt buộc nhập môn học!' }]}>
             <AutoComplete
-              options={categories.map(cat => ({ value: cat }))}
-              placeholder="Chọn hoặc nhập tên môn mới từ bàn phím"
+              options={courseList.map(c => ({ value: c }))}
+              placeholder="Gõ để thêm môn mới hoặc chọn từ danh sách"
               filterOption={(inputValue, option) =>
                 option!.value.toUpperCase().indexOf(inputValue.toUpperCase()) !== -1
               }
             />
           </Form.Item>
 
-          <div style={{ display: 'flex', gap: 10 }}>
-            <Form.Item name="date" label="Ngày giờ học" rules={[{ required: true }]} style={{ flex: 1 }}>
-              <DatePicker showTime style={{ width: '100%' }} format="DD/MM/YYYY HH:mm" />
-            </Form.Item>
-            <Form.Item name="duration" label="Thời lượng (phút)" rules={[{ required: true }]} style={{ flex: 1 }}>
-              <InputNumber min={1} style={{ width: '100%' }} />
-            </Form.Item>
-          </div>
+          <Row gutter={16}>
+            <Col span={12}>
+              <Form.Item name="recordDate" label="Ngày học" rules={[{ required: true, message: 'Chọn ngày!' }]}>
+                <DatePicker showTime style={{ width: '100%' }} format="DD/MM/YYYY HH:mm" />
+              </Form.Item>
+            </Col>
+            <Col span={12}>
+              <Form.Item> name="timeSpent" label="Thời lượng (phút)" rules={[{ required: true, message: 'Nhập thời gian!' }]}
+                <InputNumber min={1} style={{ width: '100%' }} />
+              </Form.Item>
+            </Col>
+          </Row>
 
-          <Form.Item name="content" label="Nội dung đã học" rules={[{ required: true }]}>
-            <Input.TextArea rows={3} />
+          <Form.Item name="details" label="Nội dung tóm tắt" rules={[{ required: true, message: 'Nhập nội dung đã học!' }]}>
+            <Input.TextArea rows={4} placeholder="Ghi lại kiến thức bạn vừa học..." />
           </Form.Item>
 
-          <Form.Item name="note" label="Ghi chú">
-            <Input placeholder="Lưu ý thêm, link tài liệu,..." />
+          <Form.Item name="extraInfo" label="Ghi chú & Tài liệu">
+            <Input placeholder="Link bài giảng, tài liệu tham khảo..." />
           </Form.Item>
         </Form>
-      </Modal>
+      </Drawer>
     </Card>
   );
 };

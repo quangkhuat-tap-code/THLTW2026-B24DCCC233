@@ -48,6 +48,19 @@
     },
 
     {
+        path: '/th02-bai-1',
+        name: 'TH02 - Bài 1: Oẳn Tù Tì',
+        icon: 'PlayCircleOutlined',
+        component: './TH02Bai1',
+    },
+    {
+        path: '/th02-bai-2',
+        name: 'TH02 - Bài 2: Ngân hàng câu hỏi',
+        icon: 'DatabaseOutlined',
+        component: './TH02Bai2',
+    },
+    
+    {
         path: '/products',
         name: 'Quản lý sản phẩm',
         icon: 'table', 
