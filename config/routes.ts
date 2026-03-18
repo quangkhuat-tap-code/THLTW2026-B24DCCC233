@@ -61,6 +61,13 @@
     },
     
     {
+        path: '/th03',
+        name: 'TH03 - Quản lý Đặt lịch',
+        icon: 'CalendarOutlined',
+        component: './TH03',
+    },
+    
+    {
         path: '/products',
         name: 'Quản lý sản phẩm',
         icon: 'table', 
