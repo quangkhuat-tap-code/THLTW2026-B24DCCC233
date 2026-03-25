@@ -1,4 +1,6 @@
-﻿export default [
+﻿import path from "path";
+
+export default [
     {
         path: '/user',
         layout: false,
@@ -59,31 +61,44 @@
         icon: 'DatabaseOutlined',
         component: './TH02Bai2',
     },
-    
+
     {
         path: '/th03',
         name: 'TH03 - Quản lý Đặt lịch',
         icon: 'CalendarOutlined',
         component: './TH03',
     },
-    
+
+    {
+        path: '/th04',
+        name: 'TH04 - Quản lý văn bằng',
+        icon: 'SafetyCertificateOutlined',
+        routes: [
+            { path: '/th04/so-van-bang', name: 'Quản lý sổ văn bằng', component: './TH04/QuanLySoVanBang' },
+            { path: '/th04/quyet-dinh', name: 'Quyết định tốt nghiệp', component: './TH04/QuyetDinhTotNghiep' },
+            { path: '/th04/cau-hinh', name: 'Cấu hình biểu mẫu', component: './TH04/CauHinhBieuMau' },
+            { path: '/th04/danh-sach', name: 'Thông tin văn bằng', component: './TH04/ThongTinVanBang' },
+            { path: '/th04/tra-cuu', name: 'Tra cứu', component: './TH04/TraCuu' },
+        ],
+    },
+
     {
         path: '/products',
         name: 'Quản lý sản phẩm',
-        icon: 'table', 
+        icon: 'table',
         component: './ProductList',
     },
-    
+
     {
-    path: '/quan-ly',
-    name: 'Quản lý Hệ thống',
-    icon: 'shop',
-    routes: [
-      { path: '/quan-ly/dashboard', name: 'Thống kê', component: './Dashboard' },
-      { path: '/quan-ly/san-pham', name: 'Sản phẩm', component: './ProductManagement' },
-      { path: '/quan-ly/don-hang', name: 'Đơn hàng', component: './OrderManagement' },
-    ],
-  },
+        path: '/quan-ly',
+        name: 'Quản lý Hệ thống',
+        icon: 'shop',
+        routes: [
+            { path: '/quan-ly/dashboard', name: 'Thống kê', component: './Dashboard' },
+            { path: '/quan-ly/san-pham', name: 'Sản phẩm', component: './ProductManagement' },
+            { path: '/quan-ly/don-hang', name: 'Đơn hàng', component: './OrderManagement' },
+        ],
+    },
 
     {
         path: '/notification',
