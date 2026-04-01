@@ -83,6 +83,18 @@ export default [
     },
 
     {
+        path: '/quan-ly-clb',
+        name: 'Quản lý Câu lạc bộ',
+        icon: 'team',
+        routes: [
+            { path: '/quan-ly-clb/danh-sach', name: 'Danh sách CLB', component: './QuanLyCauLacBo/CauLacBo' },
+            { path: '/quan-ly-clb/don-dang-ky', name: 'Đơn đăng ký', component: './QuanLyCauLacBo/DonDangKy' },
+            { path: '/quan-ly-clb/thanh-vien', name: 'Thành viên CLB', component: './QuanLyCauLacBo/ThanhVien' },
+            { path: '/quan-ly-clb/thong-ke', name: 'Báo cáo thống kê', component: './QuanLyCauLacBo/ThongKe' },
+        ],
+    },
+
+    {
         path: '/products',
         name: 'Quản lý sản phẩm',
         icon: 'table',
