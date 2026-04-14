@@ -111,6 +111,19 @@ export default [
             { path: '/quan-ly/don-hang', name: 'Đơn hàng', component: './OrderManagement' },
         ],
     },
+    
+    {
+        path: '/th06',
+        name: 'TH06 - Kế hoạch du lịch',
+        icon: 'CompassOutlined',
+        routes: [
+            { path: '/th06/kham-pha', name: 'Khám phá điểm đến', component: './TH06_KeHoachDuLich/KhamPha' },
+            { path: '/th06/lich-trinh', name: 'Tạo lịch trình', component: './TH06_KeHoachDuLich/LichTrinh' },
+            { path: '/th06/ngan-sach', name: 'Quản lý ngân sách', component: './TH06_KeHoachDuLich/NganSach' },
+            { path: '/th06/admin-diem-den', name: 'Admin - Điểm đến', component: './TH06_KeHoachDuLich/AdminDiemDen' },
+            { path: '/th06/admin-thong-ke', name: 'Admin - Thống kê', component: './TH06_KeHoachDuLich/AdminThongKe' },
+        ],
+    },
 
     {
         path: '/notification',
