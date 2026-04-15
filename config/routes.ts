@@ -1,4 +1,4 @@
-﻿import path from "path";
+import path from "path";
 
 export default [
     {
@@ -123,6 +123,13 @@ export default [
             { path: '/th06/admin-diem-den', name: 'Admin - Điểm đến', component: './TH06_KeHoachDuLich/AdminDiemDen' },
             { path: '/th06/admin-thong-ke', name: 'Admin - Thống kê', component: './TH06_KeHoachDuLich/AdminThongKe' },
         ],
+    },
+
+    {
+        path: '/quan-ly-phong-hoc',
+        name: 'Quản lý phòng học',
+        icon: 'bank',
+        component: './KTGK_QuanLyPhongHoc/DanhSachPhongHoc',
     },
 
     {
