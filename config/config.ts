@@ -39,7 +39,7 @@ export default defineConfig({
 	},
 	// esbuild is father build tools
 	// https://umijs.org/plugins/plugin-esbuild
-	esbuild: {},
+	// esbuild: {},
 	title: false,
 	ignoreMomentLocale: true,
 	// proxy: proxy[REACT_APP_ENV || 'dev'],
@@ -53,7 +53,7 @@ export default defineConfig({
 		type: 'none',
 	},
 	// mfsu: {},
-	webpack5: {},
+	// webpack5: {},
 	exportStatic: {},
 	define: Object.entries(process.env).reduce((result, [key, value]) => {
 		if (key.startsWith('APP_CONFIG_')) {

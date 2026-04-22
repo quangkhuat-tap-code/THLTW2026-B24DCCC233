@@ -126,6 +126,19 @@ export default [
     },
 
     {
+        path: '/th07',
+        name: 'TH07 - Blog cá nhân',
+        icon: 'ReadOutlined',
+        routes: [
+            { path: '/th07/trang-chu', name: 'Trang chủ', component: './TH07_BlogCaNhan/TrangChu' },
+            { path: '/th07/bai-viet/:id', name: 'Chi tiết bài viết', component: './TH07_BlogCaNhan/ChiTietBaiViet', hideInMenu: true },
+            { path: '/th07/gioi-thieu', name: 'Giới thiệu', component: './TH07_BlogCaNhan/TrangGioiThieu' },
+            { path: '/th07/quan-ly-bai-viet', name: 'Quản lý bài viết', component: './TH07_BlogCaNhan/QuanLyBaiViet' },
+            { path: '/th07/quan-ly-the', name: 'Quản lý thẻ', component: './TH07_BlogCaNhan/QuanLyThe' },
+        ],
+    },
+
+    {
         path: '/quan-ly-phong-hoc',
         name: 'Quản lý phòng học',
         icon: 'bank',
