@@ -139,6 +139,19 @@ export default [
     },
 
     {
+        path: '/th08',
+        name: 'TH08 - Ứng dụng Thể dục',
+        icon: 'HeartOutlined',
+        routes: [
+            { path: '/th08/trang-chu', name: 'Dashboard', component: './TH08_UDTheDuc/TrangChu' },
+            { path: '/th08/nhat-ky-tap-luyen', name: 'Nhật ký tập luyện', component: './TH08_UDTheDuc/NhatKyTapLuyen' },
+            { path: '/th08/nhat-ky-chi-so', name: 'Nhật ký chỉ số', component: './TH08_UDTheDuc/NhatKyChiSoSucKhoe' },
+            { path: '/th08/quan-ly-muc-tieu', name: 'Quản lý mục tiêu', component: './TH08_UDTheDuc/QuanLyMucTieu' },
+            { path: '/th08/thu-vien-bai-tap', name: 'Thư viện bài tập', component: './TH08_UDTheDuc/ThuVienBaiTap' },
+        ],
+    },
+
+    {
         path: '/quan-ly-phong-hoc',
         name: 'Quản lý phòng học',
         icon: 'bank',
