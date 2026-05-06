@@ -152,6 +152,17 @@ export default [
     },
 
     {
+        path: '/th09',
+        name: 'TH09 - Theo dõi công việc',
+        icon: 'ProjectOutlined',
+        routes: [
+            { path: '/th09/trang-chu', name: 'Dashboard', component: './TH09_UDTheoDoiCongViec/TrangChu' },
+            { path: '/th09/kanban', name: 'Kanban Board', component: './TH09_UDTheoDoiCongViec/BangKanban' },
+            { path: '/th09/danh-sach', name: 'Danh sách công việc', component: './TH09_UDTheoDoiCongViec/DanhSachCongViec' },
+        ],
+    },
+
+    {
         path: '/quan-ly-phong-hoc',
         name: 'Quản lý phòng học',
         icon: 'bank',
